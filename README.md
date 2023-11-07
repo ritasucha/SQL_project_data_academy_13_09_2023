@@ -1,0 +1,2 @@
+# SQL_project_data_academy_13_09_2023
+analysis of basic foodstuffs availability
