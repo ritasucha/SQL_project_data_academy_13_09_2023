@@ -1,0 +1,43 @@
+SELECT
+	a.price_year AS year,
+	a.price_growth,
+	a.payroll_growth,
+	d.GDP_growth
+FROM (
+	SELECT
+		trspspf.price_year,
+		round( ( trspspf.price_average - trspspf2.price_average ) / trspspf2.price_average * 100, 2) AS price_growth,
+		round( ( trspspf.payroll_average - trspspf2.payroll_average ) / trspspf2.payroll_average * 100, 2) AS payroll_growth
+	FROM t_rita_sucha_project_sql_primary_final trspspf
+	JOIN t_rita_sucha_project_sql_primary_final trspspf2
+		ON trspspf2.price_year + 1 = trspspf.price_year
+		AND trspspf2.payroll_year + 1 = trspspf.payroll_year
+	GROUP BY trspspf.price_year
+	) a
+LEFT JOIN (
+	SELECT
+		b.country,
+		b.year,
+		round( ( b.GDP - c.GDP ) / c.GDP * 100, 2) AS GDP_growth
+	FROM ((
+		SELECT
+			country,
+			year,
+			round ( trspssf.GDP, 2) AS GDP
+		FROM t_rita_sucha_project_sql_secondary_final trspssf
+		WHERE country = 'Czech Republic'
+			AND year BETWEEN '2006' AND '2018'
+			) b
+	JOIN 	(
+			SELECT
+				country,
+				year,
+				round ( trspssf.GDP, 2) AS GDP
+			FROM t_rita_sucha_project_sql_secondary_final trspssf
+			WHERE country = 'Czech Republic'
+				AND year BETWEEN '2006' AND '2018'
+			) c
+		ON c.year + 1 = b.year
+		)) d
+ON d.year = a.price_year
+ORDER BY year;

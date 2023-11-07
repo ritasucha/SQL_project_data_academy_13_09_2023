@@ -1,0 +1,25 @@
+CREATE OR REPLACE TABLE t_rita_sucha_project_sql_secondary_final
+SELECT
+	a.country,
+	b.population,
+	b.GDP,
+	b.gini,
+	b.`year`
+FROM (
+	SELECT
+		country
+	FROM countries c
+	WHERE continent = 'Europe'
+	) a
+LEFT JOIN
+	(
+	SELECT
+		country,
+		GDP,
+		gini,
+		population,
+		`year`
+	FROM economies e
+	) b
+ON b.country = a.country
+ORDER BY a.country, b.`year`DESC;

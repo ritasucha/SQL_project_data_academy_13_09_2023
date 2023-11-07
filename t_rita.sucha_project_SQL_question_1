@@ -1,0 +1,9 @@
+SELECT DISTINCT
+	trspspf.branch,
+	trspspf.payroll_year,
+	round( ( trspspf.payroll_average - trspspf2.payroll_average ) / trspspf2.payroll_average * 100, 2) AS payroll_growth
+FROM t_rita_sucha_project_sql_primary_final trspspf
+JOIN t_rita_sucha_project_sql_primary_final trspspf2
+	ON trspspf2.payroll_year + 1 = trspspf.payroll_year
+	AND trspspf2.branch = trspspf.branch
+ORDER BY branch, payroll_year;

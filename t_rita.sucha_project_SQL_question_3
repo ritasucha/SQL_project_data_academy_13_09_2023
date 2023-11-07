@@ -1,0 +1,17 @@
+WITH price_growth AS (
+	SELECT
+		trspspf.category,
+		trspspf.price_year,
+		round( ( trspspf.price_average - trspspf2.price_average ) / trspspf2.price_average * 100, 2) AS price_growth
+	FROM t_rita_sucha_project_sql_primary_final trspspf
+	JOIN t_rita_sucha_project_sql_primary_final trspspf2
+		ON trspspf2.price_year + 1 = trspspf.price_year
+		AND trspspf2.category = trspspf.category
+	GROUP BY trspspf.category, trspspf.price_year
+	)
+SELECT
+	category,
+	round( avg( price_growth), 2) AS price_percentage_growth_average
+FROM price_growth
+GROUP BY category
+ORDER BY price_percentage_growth_average;
