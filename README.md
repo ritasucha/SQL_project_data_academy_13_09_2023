@@ -3,7 +3,7 @@ Analysis of basic foodstuffs availability
 
 Název projektu: Dostupnost základních potravin široké veřejnosti 
 
-Vypracovala: Rita Suchá
+Vypracovala: Rita Suchá (Discord: Rita Sucha #3925)
 
 Datum odevzdání: 8. 11. 2023
 

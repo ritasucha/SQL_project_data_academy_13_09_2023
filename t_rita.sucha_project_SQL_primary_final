@@ -1,3 +1,5 @@
+-- Discord: Rita Sucha #3925
+
 CREATE OR REPLACE TABLE t_rita_sucha_project_SQL_primary_final
 SELECT *
 FROM (
