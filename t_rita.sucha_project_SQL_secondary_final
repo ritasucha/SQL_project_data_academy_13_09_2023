@@ -1,25 +1,28 @@
-CREATE OR REPLACE TABLE t_rita_sucha_project_sql_secondary_final
+CREATE OR REPLACE TABLE t_rita_sucha_project_SQL_secondary_final
 SELECT
+	b.`year`,
 	a.country,
-	b.population,
 	b.GDP,
-	b.gini,
-	b.`year`
+	b.gini AS Gini,
+	b.population
 FROM (
-	SELECT
-		country
+	SELECT country
 	FROM countries c
 	WHERE continent = 'Europe'
 	) a
 LEFT JOIN
 	(
 	SELECT
+		`year`,
 		country,
 		GDP,
 		gini,
-		population,
-		`year`
+		population
 	FROM economies e
 	) b
 ON b.country = a.country
-ORDER BY a.country, b.`year`DESC;
+WHERE `year` BETWEEN 2006 AND 2018
+	AND GDP IS NOT NULL
+ORDER BY
+    b.`year`,
+    a.country;

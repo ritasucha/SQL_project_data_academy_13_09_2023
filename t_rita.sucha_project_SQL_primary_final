@@ -1,34 +1,30 @@
 CREATE OR REPLACE TABLE t_rita_sucha_project_SQL_primary_final
 SELECT *
 FROM (
-	WITH price_average AS (
+	WITH price_average_calculation AS (
 		SELECT
 			YEAR(date_from) AS price_year,
 			category_code,
-			round( avg(value), 2) AS price_average
+			round(avg(value), 2) AS price_average
 		FROM czechia_price
 		GROUP BY
 			price_year,
 			category_code
-		ORDER BY price_year
 		)
 	SELECT
-		pra.price_year,
+		prac.price_year,
 		cpc.name AS category,
-		pra.price_average
-	FROM price_average AS pra
+		prac.price_average
+	FROM price_average_calculation AS prac
 	LEFT JOIN czechia_price_category cpc
-		ON cpc.code = pra.category_code
-	ORDER BY
-		price_year,
-		category
-	) AS price
+		ON cpc.code = prac.category_code
+	) AS prices
 CROSS JOIN (
-		WITH payroll_average AS (
+		WITH payroll_average_calculation AS (
 			SELECT
 				payroll_year,
 				industry_branch_code,
-				round( avg( value), 2) AS payroll_average
+				round(avg(value), 2) AS payroll_average
 			FROM czechia_payroll
 			WHERE
 				value_type_code = '5958'
@@ -38,18 +34,14 @@ CROSS JOIN (
 			GROUP BY
 				payroll_year,
 				industry_branch_code
-			ORDER BY payroll_year
 			)
 		SELECT
-			pa.payroll_year,
+			paac.payroll_year,
 			cpib.name AS branch,
-			pa.payroll_average
-		FROM payroll_average AS pa
+			paac.payroll_average
+		FROM payroll_average_calculation AS paac
 		LEFT JOIN czechia_payroll_industry_branch cpib
-			ON cpib.code = pa.industry_branch_code
+			ON cpib.code = paac.industry_branch_code
 		WHERE industry_branch_code IS NOT NULL
-		ORDER BY
-			payroll_year,
-			branch
-		) AS payroll
-	ON payroll.payroll_year = price.price_year;
+		) AS payrolls
+	ON payrolls.payroll_year = prices.price_year;
