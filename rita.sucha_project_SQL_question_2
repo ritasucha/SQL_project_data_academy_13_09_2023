@@ -1,0 +1,23 @@
+WITH mleko_chleb_prices_payrolls AS (
+	SELECT 
+		category,
+		round(avg(price_average), 2) AS prices, 
+		price_year,
+		payroll_year,
+		round(avg(payroll_average), 2) AS payrolls
+	FROM t_rita_sucha_project_sql_primary_final trspspf 
+	WHERE category IN ('Mléko polotučné pasterované', 'Chléb konzumní kmínový')
+		AND price_year IN ('2006', '2018')
+	GROUP BY 
+		category,
+		price_year,
+		payroll_year  
+	ORDER BY 
+		category,
+		price_year
+	)
+SELECT 
+	price_year AS year,
+	category,
+	floor(payrolls / prices) AS kilograms_or_liters
+FROM mleko_chleb_prices_payrolls;
